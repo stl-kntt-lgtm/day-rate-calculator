@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freelance Day Rate Calculator — Find Your Real Rate</title>
+<meta name="description" content="Calculate the day rate and hourly rate you need to charge as a freelancer, based on your income goal, expenses, and actual billable days per year.">
+<style>
+  :root {
+    --paper: #EDEFEC;
+    --ink: #14181C;
+    --ink-soft: #4A5158;
+    --teal: #1B6E63;
+    --teal-dark: #114A43;
+    --gold: #B8902E;
+    --line: #C7CCC6;
+    --card: #F8F9F7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.5;
+    padding: 48px 20px 80px;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .lede {
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 50ch;
+    margin: 0 0 36px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 32px;
+  }
+
+  .field {
+    margin-bottom: 22px;
+  }
+
+  .field:last-of-type { margin-bottom: 0; }
+
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  label .hint {
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 11px 12px;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  input[type="number"]:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 1px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .results {
+    margin-top: 36px;
+    border-top: 2px solid var(--ink);
+    padding-top: 24px;
+  }
+
+  .result-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+    font-family: 'Courier New', monospace;
+  }
+
+  .result-line:last-child { border-bottom: none; }
+
+  .result-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .result-value {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .total-line .result-value {
+    font-size: 28px;
+    color: var(--teal-dark);
+  }
+
+  .total-line {
+    border-bottom: none;
+    padding-top: 16px;
+  }
+
+  .billable-days {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .billable-days strong {
+    color: var(--gold);
+    font-family: 'Courier New', monospace;
+  }
+
+  footer {
+    max-width: 640px;
+    margin: 40px auto 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .row { grid-template-columns: 1fr; }
+    .card { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Freelance Day Rate Calculator</h1>
+  <p class="lede">Most freelancers price off a guess. This works backward from the income you actually want, after accounting for the days you won't be billing — vacation, admin, sick days, slow weeks.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="income">Desired annual income <span class="hint">take-home, before tax</span></label>
+      <input type="number" id="income" value="70000" min="0" step="1000">
+    </div>
+
+    <div class="field">
+      <label for="expenses">Annual business expenses <span class="hint">software, insurance, etc.</span></label>
+      <input type="number" id="expenses" value="4000" min="0" step="100">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="weeksOff">Weeks off per year <span class="hint">vacation, sick, admin</span></label>
+        <input type="number" id="weeksOff" value="6" min="0" max="52" step="1">
+      </div>
+
+      <div class="field">
+        <label for="daysPerWeek">Billable days / week</label>
+        <input type="number" id="daysPerWeek" value="4" min="1" max="7" step="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="hoursPerDay">Hours per billable day</label>
+      <input type="number" id="hoursPerDay" value="6" min="1" max="16" step="0.5">
+    </div>
+
+    <div class="results">
+      <div class="result-line">
+        <span class="result-label">Hourly rate</span>
+        <span class="result-value" id="hourlyOut">$0</span>
+      </div>
+      <div class="result-line total-line">
+        <span class="result-label">Day rate</span>
+        <span class="result-value" id="dayOut">$0</span>
+      </div>
+    </div>
+
+    <div class="billable-days">
+      You'll actually bill <strong id="billableDaysOut">0</strong> days this year — that's the number that matters, not 365.
+    </div>
+  </div>
+
+  <p class="lede" style="margin-top:28px; font-size:14px;">
+    Note: this gives you a floor, not a final price. Market rate, experience, and demand can push it higher — but if your quote is below this number, you're working for less than your goal.
+  </p>
+</div>
+
+<footer>
+  Built as a simple, free tool. No tracking, no signup — just math.
+</footer>
+
+<script>
+  const incomeEl = document.getElementById('income');
+  const expensesEl = document.getElementById('expenses');
+  const weeksOffEl = document.getElementById('weeksOff');
+  const daysPerWeekEl = document.getElementById('daysPerWeek');
+  const hoursPerDayEl = document.getElementById('hoursPerDay');
+
+  const hourlyOut = document.getElementById('hourlyOut');
+  const dayOut = document.getElementById('dayOut');
+  const billableDaysOut = document.getElementById('billableDaysOut');
+
+  function formatMoney(n) {
+    if (!isFinite(n) || isNaN(n)) return '$0';
+    return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  function calculate() {
+    const income = parseFloat(incomeEl.value) || 0;
+    const expenses = parseFloat(expensesEl.value) || 0;
+    const weeksOff = parseFloat(weeksOffEl.value) || 0;
+    const daysPerWeek = parseFloat(daysPerWeekEl.value) || 0;
+    const hoursPerDay = parseFloat(hoursPerDayEl.value) || 0;
+
+    const billableWeeks = Math.max(52 - weeksOff, 0);
+    const billableDays = billableWeeks * daysPerWeek;
+    const totalNeeded = income + expenses;
+
+    const dayRate = billableDays > 0 ? totalNeeded / billableDays : 0;
+    const hourlyRate = hoursPerDay > 0 ? dayRate / hoursPerDay : 0;
+
+    dayOut.textContent = formatMoney(dayRate);
+    hourlyOut.textContent = formatMoney(hourlyRate) + ' / hr';
+    billableDaysOut.textContent = Math.round(billableDays);
+  }
+
+  [incomeEl, expensesEl, weeksOffEl, daysPerWeekEl, hoursPerDayEl].forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+</body>
+</html>
